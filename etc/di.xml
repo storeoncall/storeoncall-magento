@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="StoreOnCall\Agent\Model\QueryRunnerInterface" type="StoreOnCall\Agent\Model\MagentoQueryRunner"/>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="storeoncall_connect" xsi:type="object">StoreOnCall\Agent\Console\Command\Connect</item>
+                <item name="storeoncall_status" xsi:type="object">StoreOnCall\Agent\Console\Command\Status</item>
+                <item name="storeoncall_preview" xsi:type="object">StoreOnCall\Agent\Console\Command\Preview</item>
+                <item name="storeoncall_send" xsi:type="object">StoreOnCall\Agent\Console\Command\Send</item>
+                <item name="storeoncall_verify" xsi:type="object">StoreOnCall\Agent\Console\Command\Verify</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

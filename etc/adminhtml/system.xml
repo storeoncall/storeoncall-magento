@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="storeoncall" translate="label" sortOrder="900" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>StoreOnCall</label>
+            <tab>advanced</tab>
+            <resource>StoreOnCall_Agent::config</resource>
+            <group id="general" translate="label comment" sortOrder="10" showInDefault="1">
+                <label>Monitoring</label>
+                <comment>Read-only store health monitoring. No customer data is ever sent. Use bin/magento storeoncall:preview to see exactly what is sent.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1">
+                    <label>Store key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>From StoreOnCall. On Adobe Commerce Cloud, set the STOREONCALL_KEY environment variable instead.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
