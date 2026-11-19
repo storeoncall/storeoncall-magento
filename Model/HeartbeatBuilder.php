@@ -11,7 +11,7 @@ use StoreOnCall\Agent\Model\Collector\SqlCollector;
  */
 class HeartbeatBuilder
 {
-    public const AGENT_VERSION = '0.1.0';
+    public const AGENT_VERSION = '0.1.1';
 
     public function __construct(
         private readonly SqlCollector $sql,

@@ -18,7 +18,7 @@ class Agent
         return $this->builder->build(new \DateTimeImmutable('now', new \DateTimeZone('UTC')), $this->config->lastSent());
     }
 
-    /** @return array{ok: bool, message: string} */
+    /** @return array{ok: bool, message: string, changed?: bool} */
     public function send(): array
     {
         if (!$this->config->enabled()) {
@@ -33,12 +33,14 @@ class Agent
         $res = $this->sender->request('POST', $this->config->apiUrl() . '/agent/v1/heartbeat', $key, (string)json_encode($payload));
         $ok = $res['status'] >= 200 && $res['status'] < 300;
         $message = $ok ? 'Sent' : sprintf('StoreOnCall answered HTTP %d: %s', $res['status'], substr($res['body'], 0, 300));
+        $previous = $this->config->lastResult();
         if ($ok || $res['status'] === 429) {
             $this->config->markSent($now, $ok ? 'ok' : 'too frequent');
         } else {
             $this->config->markSent($this->config->lastSent() ?? $now, $message);
         }
-        return ['ok' => $ok, 'message' => $message];
+        // Whether this differs from the last attempt, so cron logs a problem once, not every 5 minutes.
+        return ['ok' => $ok, 'message' => $message, 'changed' => $previous !== ($ok ? 'ok' : ($res['status'] === 429 ? 'too frequent' : $message))];
     }
 
     /** @return array{ok: bool, message: string} */

@@ -17,7 +17,8 @@ class Heartbeat
     {
         try {
             $r = $this->agent->send();
-            if (!$r['ok']) {
+            // A lasting problem (for example the plan ended, or the key was replaced) is logged when it starts, not every 5 minutes.
+            if (!$r['ok'] && ($r['changed'] ?? true)) {
                 $this->logger->warning('StoreOnCall: ' . $r['message']);
             }
         } catch (\Throwable $e) {

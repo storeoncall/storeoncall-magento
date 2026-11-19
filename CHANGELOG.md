@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 (20 November 2026)
+
+- A lasting problem (for example the plan has ended, or the store key was replaced) is written to the Magento log once when it starts, instead of every 5 minutes.
+
 ## 0.1.0 (18 November 2026)
 
 First public version.
