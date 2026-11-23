@@ -1,5 +1,7 @@
 # StoreOnCall agent for Magento 2 / Adobe Commerce
 
+The Magento 2 and Adobe Commerce plugin for [StoreOnCall](https://storeoncall.com), store monitoring for Adobe Commerce, Shopify Plus and BigCommerce. Setup guide: [storeoncall.com/get-started](https://storeoncall.com/get-started).
+
 Read-only store health monitoring. Every 5 minutes, Magento cron sends StoreOnCall a small report: cron and indexer status, queue sizes, order and payment counts per hour, unsent order email counts, cache status, installed extension versions, and which configuration paths changed. Once an hour it adds catalog counts: enabled, visible products with no price or no category, and the SKUs of any of the 20 best-sellers (last 30 days) that are out of stock; plus data-feed signals: the last product change time, total stock quantity and items in stock, and the number of orders waiting over 2 hours in the new state.
 
 **It never sends customer data**: no names, emails, addresses, phone numbers, IPs or payment details. Only counts, statuses, job codes and totals. Run `bin/magento storeoncall:preview` to see exactly what would be sent.
