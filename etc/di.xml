@@ -1,6 +1,33 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="StoreOnCall\Agent\Model\QueryRunnerInterface" type="StoreOnCall\Agent\Model\MagentoQueryRunner"/>
+    <preference for="StoreOnCall\Agent\Model\EnvironmentInterface" type="StoreOnCall\Agent\Model\MagentoEnvironment"/>
+    <!-- Every bin/magento run builds every console command, so commands get a proxy and touch nothing until they are run. -->
+    <type name="StoreOnCall\Agent\Console\Command\Connect">
+        <arguments>
+            <argument name="agent" xsi:type="object">StoreOnCall\Agent\Model\Agent\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="StoreOnCall\Agent\Console\Command\Status">
+        <arguments>
+            <argument name="agent" xsi:type="object">StoreOnCall\Agent\Model\Agent\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="StoreOnCall\Agent\Console\Command\Preview">
+        <arguments>
+            <argument name="agent" xsi:type="object">StoreOnCall\Agent\Model\Agent\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="StoreOnCall\Agent\Console\Command\Send">
+        <arguments>
+            <argument name="agent" xsi:type="object">StoreOnCall\Agent\Model\Agent\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="StoreOnCall\Agent\Console\Command\Verify">
+        <arguments>
+            <argument name="agent" xsi:type="object">StoreOnCall\Agent\Model\Agent\Proxy</argument>
+        </arguments>
+    </type>
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

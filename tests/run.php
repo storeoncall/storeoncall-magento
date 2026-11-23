@@ -229,5 +229,32 @@ $check('feeds: orders waiting in the new state for over 2 hours, last 7 days onl
 $check('feeds: an empty catalog gives no product time, and other stock sources are ignored', $feeds['products_updated_at'] === null && $feeds['stock_qty'] === 0.0 && $feeds['stock_in_stock'] === 0);
 $check('Adobe Commerce staging: only the current version of a product is read', ($staged['products'] ?? null) === 1 && ($staged['zero_price'] ?? null) === 0 && ($staged['no_category'] ?? null) === 0);
 
+// Install safety: Magento builds every console command on every bin/magento run, so a constructor that asks for
+// one of our interfaces without a preference in di.xml breaks bin/magento entirely (even setup:upgrade).
+$di = (string) file_get_contents($root . '/etc/di.xml');
+$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+$missing = [];
+foreach ($it as $file) {
+    $path = (string) $file;
+    if (!str_ends_with($path, '.php') || str_contains($path, '/tests/')) continue;
+    $src = (string) file_get_contents($path);
+    if (!preg_match('/function __construct\s*\(([^)]*)\)/s', $src, $m)) continue;
+    preg_match_all('/\b([A-Z]\w*Interface)\s+\$/', $m[1], $types);
+    foreach ($types[1] as $t) {
+        // Only our own interfaces: Magento's come with their own preferences.
+        if (!preg_match('/use\s+(StoreOnCall\\\\Agent\\\\[\w\\\\]*' . $t . ');/', $src, $u) && !is_file($root . '/Model/' . $t . '.php')) continue;
+        $fqcn = $u[1] ?? ('StoreOnCall\\Agent\\Model\\' . $t);
+        if (!str_contains($di, '<preference for="' . $fqcn . '"')) $missing[] = basename($path) . ' needs ' . $fqcn;
+    }
+}
+$check('every interface a constructor asks for has a preference in di.xml' . ($missing ? ': ' . implode(', ', array_unique($missing)) : ''), $missing === []);
+$check('console commands get the agent through a proxy', substr_count($di, 'StoreOnCall\\Agent\\Model\\Agent\\Proxy') === 5);
+$check('no syntax errors in any plugin file', (function () use ($root): bool {
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)) as $f) {
+        if (str_ends_with((string) $f, '.php')) { exec('php -l ' . escapeshellarg((string) $f) . ' 2>&1', $o, $code); if ($code !== 0) return false; }
+    }
+    return true;
+})());
+
 echo $fails ? "\n{$fails} failed\n" : "\nAll plugin checks passed\n";
 exit($fails ? 1 : 0);

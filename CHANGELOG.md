@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 (23 November 2026)
+
+- Fixes installing: once the module was enabled, `bin/magento` stopped with "Cannot instantiate interface StoreOnCall\Agent\Model\EnvironmentInterface", so `setup:upgrade` could not run. The missing setting is now in `etc/di.xml`.
+- The StoreOnCall console commands now load nothing until you run one of them, so they can never slow down or stop other `bin/magento` commands.
+- Install with Composer only: `composer require storeoncall/module-agent`.
+
 ## 0.1.1 (20 November 2026)
 
 - A lasting problem (for example the plan has ended, or the store key was replaced) is written to the Magento log once when it starts, instead of every 5 minutes.
